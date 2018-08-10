@@ -7,13 +7,7 @@ class My2dContext {
         this._zoom = 1;
         this.draw = function() {};
 
-        this.canvas.addEventListener('mousewheel', (e) => {
-            if (e.deltaY > 0) {
-                this.zoomOut();
-            } else {
-                this.zoomIn();
-            }
-        }, { passive: true });
+        this.setZoomListeners();
     }
 
     get canvas() { return this._ctx.canvas; }
@@ -73,11 +67,14 @@ class My2dContext {
         );
     }
 
-    zoomIn(){
-        this.zoom += 0.05;
-    }
-    zoomOut(){
-        this.zoom -= 0.05;
+    zoomIn(){ this.zoom += 0.05; } 
+    zoomOut(){ this.zoom -= 0.05; }
+    zooming(isOut) {
+        if (isOut) {
+            this.zoomOut();
+        } else {
+            this.zoomIn();
+        }
     }
 
     //sqr => square size
@@ -97,4 +94,73 @@ class My2dContext {
         this.strokeStyle = "#FFEECE";
         this.stroke();
     }
-};
+
+    setZoomListeners() {
+        this.canvas.addEventListener(
+            'mousewheel',
+            (e) => this.zooming(e.deltaY > 0),
+            { passive: true }
+        );
+
+        this.setPinchListener();
+    }
+    
+    //
+    // https://github.com/mdn/dom-examples/blob/master/pointerevents/Pinch_zoom_gestures.html
+    //
+
+    setPinchListener(){
+        // Global vars to cache event state
+        this.canvas.evCache = new Array();
+        this.canvas.prevDiff = -1;
+        this.canvas.self = this;
+
+        this.canvas.onpointerdown = this.pointerdown_handler;
+        this.canvas.onpointermove = this.pointermove_handler;
+
+        this.canvas.onpointerup = this.pointerup_handler;
+        this.canvas.onpointercancel = this.pointerup_handler;
+        this.canvas.onpointerout = this.pointerup_handler;
+        this.canvas.onpointerleave = this.pointerup_handler;
+    }
+
+    pointerdown_handler(ev) {
+        this.evCache.push(ev);
+    }
+    pointermove_handler(ev) {
+        // Find this event in the cache and update its record with this event
+        for (var i = 0; i < this.evCache.length; i++) {
+            if (ev.pointerId == this.evCache[i].pointerId) {
+                this.evCache[i] = ev;
+                break;
+            }
+        }
+        // If two pointers are down, check for pinch gestures
+        if (this.evCache.length == 2) {
+            // Calculate the distance between the two pointers
+            var curDiff = Math.abs(this.evCache[0].clientX - this.evCache[1].clientX);
+            if (this.prevDiff > 0) {
+                if (curDiff > this.prevDiff) {
+                    self.zoomIn();
+                }
+                if (curDiff < this.prevDiff) {
+                    self.zoomOut();
+                }
+            }
+            // Cache the distance for the next move event 
+            this.prevDiff = curDiff;
+        }
+    }
+    pointerup_handler(ev) {
+        // Remove this pointer from the cache
+        for (var i = 0; i < this.evCache.length; i++) {
+            if (this.evCache[i].pointerId == ev.pointerId) {
+                this.evCache.splice(i, 1);
+                break;
+            }
+        }
+
+        // If the number of pointers down is less than two then reset diff tracker
+        if (this.evCache.length < 2) this.prevDiff = -1;
+    }
+}
