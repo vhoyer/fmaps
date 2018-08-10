@@ -7,14 +7,13 @@ class My2dContext {
         this._zoom = 1;
 
         let self = this;
-        this.canvas.onmousewheel = function (e) {
+        this.canvas.addEventListener('mousewheel', function (e) {
             if (e.deltaY > 0) {
                 self.zoomOut();
             } else {
                 self.zoomIn();
             }
-            console.log(self.zoom);
-        };
+        }, { passive: true });
     }
 
     get drawFunction() { return this.draw }
@@ -53,7 +52,7 @@ class My2dContext {
         //https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
         if (arguments.length === 5){
             return this.ctx.drawImage(
-                arguments[0],
+                arguments[0], //thats the image
                 arguments[1] * this.zoom,
                 arguments[2] * this.zoom,
                 arguments[3] * this.zoom,
