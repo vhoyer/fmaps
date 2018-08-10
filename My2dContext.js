@@ -141,10 +141,10 @@ class My2dContext {
             var curDiff = Math.abs(this.evCache[0].clientX - this.evCache[1].clientX);
             if (this.prevDiff > 0) {
                 if (curDiff > this.prevDiff) {
-                    self.zoomIn();
+                    this.self.zoomIn();
                 }
                 if (curDiff < this.prevDiff) {
-                    self.zoomOut();
+                    this.self.zoomOut();
                 }
             }
             // Cache the distance for the next move event 
