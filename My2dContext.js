@@ -3,8 +3,9 @@
 class My2dContext {
 
     constructor(ctx){
-        this.ctx = ctx;
+        this._ctx = ctx;
         this._zoom = 1;
+        this.draw = function() {};
 
         this.canvas.addEventListener('mousewheel', (e) => {
             if (e.deltaY > 0) {
@@ -15,11 +16,8 @@ class My2dContext {
         }, { passive: true });
     }
 
-    get drawFunction() { return this.draw }
-    set drawFunction(value) { this.draw = value }
-
-    get canvas() { return this.ctx.canvas; }
-    set canvas(value) { this.ctx.canvas = value; }
+    get canvas() { return this._ctx.canvas; }
+    set canvas(value) { this._ctx.canvas = value; }
 
     get zoom() { return this._zoom; }
     set zoom(value) {
@@ -38,19 +36,19 @@ class My2dContext {
         return this.canvas.height / this.zoom;
     }
 
-    get fillStyle() { return this.ctx.fillStyle; }
-    set fillStyle(value) { this.ctx.fillStyle = value; }
+    get fillStyle() { return this._ctx.fillStyle; }
+    set fillStyle(value) { this._ctx.fillStyle = value; }
 
-    get strokeStyle() { return this.ctx.strokeStyle; }
-    set strokeStyle(value) { this.ctx.strokeStyle = value }
+    get strokeStyle() { return this._ctx.strokeStyle; }
+    set strokeStyle(value) { this._ctx.strokeStyle = value }
 
-    fillRect(){ return this.ctx.fillRect(...arguments); }
-    beginPath() { return this.ctx.beginPath(); }
-    stroke() { return this.ctx.stroke(); }
+    fillRect(){ return this._ctx.fillRect(...arguments); }
+    beginPath() { return this._ctx.beginPath(); }
+    stroke() { return this._ctx.stroke(); }
     drawImage() {
         //https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
         if (arguments.length === 5){
-            return this.ctx.drawImage(
+            return this._ctx.drawImage(
                 arguments[0], //thats the image
                 arguments[1] * this.zoom,
                 arguments[2] * this.zoom,
@@ -58,18 +56,18 @@ class My2dContext {
                 arguments[4] * this.zoom
             );
         }
-        return this.ctx.drawImage(...arguments);
+        return this._ctx.drawImage(...arguments);
     }
     moveTo(x,y) {
         //https://developer.mozilla.org/pt-BR/docs/Web/API/CanvasRenderingContext2D/moveTo
-        return this.ctx.moveTo(
+        return this._ctx.moveTo(
             x * this.zoom,
             y * this.zoom
         );
     }
     lineTo(x, y) {
         //https://developer.mozilla.org/pt-BR/docs/Web/API/CanvasRenderingContext2D/lineTo
-        return this.ctx.lineTo(
+        return this._ctx.lineTo(
             x * this.zoom,
             y * this.zoom
         );
@@ -82,6 +80,7 @@ class My2dContext {
         this.zoom -= 0.05;
     }
 
+    //sqr => square size
     drawBackground(sqr) {
         this.fillStyle = "#FFFDF7";
         this.fillRect(0, 0, w, h);

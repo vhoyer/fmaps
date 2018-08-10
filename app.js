@@ -11,7 +11,7 @@ img.src = "img2.png";
 img.onload = () => ctx.drawImage(img, 0, 0, 100, 100);
 ctx.drawBackground(50);
 
-ctx.drawFunction = function(){
+ctx.draw = function(){
     ctx.drawBackground(50);
     ctx.drawImage(img, 0, 0, 100, 100);
 }
