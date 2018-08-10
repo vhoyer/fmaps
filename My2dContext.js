@@ -6,12 +6,11 @@ class My2dContext {
         this.ctx = ctx;
         this._zoom = 1;
 
-        let self = this;
-        this.canvas.addEventListener('mousewheel', function (e) {
+        this.canvas.addEventListener('mousewheel', (e) => {
             if (e.deltaY > 0) {
-                self.zoomOut();
+                this.zoomOut();
             } else {
-                self.zoomIn();
+                this.zoomIn();
             }
         }, { passive: true });
     }
