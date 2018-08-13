@@ -36,6 +36,10 @@ class My2dContext {
     get strokeStyle() { return this._ctx.strokeStyle; }
     set strokeStyle(value) { this._ctx.strokeStyle = value }
 
+    get font() { return this._ctx.font; }
+    set font(value) { this._ctx.font = value; }
+
+    fillText() { return this._ctx.fillText(...arguments); }
     fillRect(){ return this._ctx.fillRect(...arguments); }
     beginPath() { return this._ctx.beginPath(); }
     stroke() { return this._ctx.stroke(); }
@@ -75,6 +79,15 @@ class My2dContext {
         } else {
             this.zoomIn();
         }
+    }
+
+    debug(){
+        this.fillStyle = "#333";
+        this.fillRect(10, h-110, 300, 100);
+
+        this.fillStyle = "#ddd";
+        this.font = "26px helvetica";
+        this.fillText(`zoom: ${Math.round(this.zoom * 100) / 100}`, 15, h-85, 200);
     }
 
     //sqr => square size

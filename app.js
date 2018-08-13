@@ -11,6 +11,7 @@ ctx.draw = function(){
     ctx.drawImage(img, 0, 0, 100, 100);
 
     //debug
+    ctx.debug();
 }
 
 let img = new Image();
