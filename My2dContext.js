@@ -5,9 +5,11 @@ class My2dContext {
     constructor(ctx){
         this._ctx = ctx;
         this._zoom = 1;
+        this._focusPoint = {x:0,y:0};
         this.draw = function() {};
 
         this.setZoomListeners();
+        this.setFocusPointListeners();
     }
 
     get canvas() { return this._ctx.canvas; }
@@ -20,6 +22,12 @@ class My2dContext {
             return;
         }
         this._zoom = value;
+        this.draw();
+    }
+
+    get focusPoint() { return this._focusPoint; }
+    set focusPoint(value) {
+        this._focusPoint = value;
         this.draw();
     }
 
@@ -83,7 +91,7 @@ class My2dContext {
     }
 
     debug(extra){
-        this.fillStyle = "#333";
+        this.fillStyle = "#081013";
         this.fillRect(10, h-110, 300, 100);
 
         this.fillStyle = "#ddd";
@@ -113,14 +121,28 @@ class My2dContext {
         this.stroke();
     }
 
+    setFocusPointListeners(){
+        this.canvas.addEventListener(
+            'pointermove',
+            (e) => this.setFocusPoint(e),
+            { passive: true }
+        )
+    }
+
+    setFocusPoint(e){
+        if (e.pointerType === 'mouse'){
+            this.focusPoint = { x: e.x, y: e.y};
+        }
+    }
+
     setZoomListeners() {
+        this.setPinchListener();
+
         this.canvas.addEventListener(
             'mousewheel',
             (e) => this.zooming(e.deltaY > 0),
             { passive: true }
         );
-
-        this.setPinchListener();
     }
     
     //
@@ -134,7 +156,11 @@ class My2dContext {
         this.canvas.self = this;
 
         this.canvas.onpointerdown = this.pointerdown_handler;
-        this.canvas.onpointermove = this.pointermove_handler;
+        //this.canvas.onpointermove = this.pointermove_handler;
+        this.canvas.addEventListener(
+            'pointermove',
+            this.pointermove_handler
+        );
 
         this.canvas.onpointerup = this.pointerup_handler;
         this.canvas.onpointercancel = this.pointerup_handler;

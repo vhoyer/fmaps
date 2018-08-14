@@ -10,6 +10,14 @@ ctx.draw = function(){
     ctx.drawBackground(200);
     ctx.drawImage(img, 0, 0, 100, 100);
 
+    ctx.beginPath();
+    ctx._ctx.moveTo(ctx.focusPoint.x - 20, ctx.focusPoint.y);
+    ctx._ctx.lineTo(ctx.focusPoint.x + 20, ctx.focusPoint.y);
+    ctx._ctx.moveTo(ctx.focusPoint.x, ctx.focusPoint.y - 20);
+    ctx._ctx.lineTo(ctx.focusPoint.x, ctx.focusPoint.y + 20);
+    ctx.strokeStyle = "#f00";
+    ctx.stroke();
+
     //debug
     ctx.debug();
 }
