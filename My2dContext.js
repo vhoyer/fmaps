@@ -82,13 +82,17 @@ class My2dContext {
         }
     }
 
-    debug(){
+    debug(extra){
         this.fillStyle = "#333";
         this.fillRect(10, h-110, 300, 100);
 
         this.fillStyle = "#ddd";
         this.font = "26px helvetica";
         this.fillText(`zoom: ${Math.round(this.zoom * 100) / 100}`, 15, h-85, 200);
+
+        if (extra != null){
+            this.fillText(extra, 15, h-55, 200);
+        }
     }
 
     //sqr => square size
@@ -138,9 +142,11 @@ class My2dContext {
         this.canvas.onpointerleave = this.pointerup_handler;
     }
 
+    //this == canvas
     pointerdown_handler(ev) {
         this.evCache.push(ev);
     }
+    //this == canvas
     pointermove_handler(ev) {
         // Find this event in the cache and update its record with this event
         for (var i = 0; i < this.evCache.length; i++) {
@@ -165,6 +171,7 @@ class My2dContext {
             this.prevDiff = curDiff;
         }
     }
+    //this == canvas
     pointerup_handler(ev) {
         // Remove this pointer from the cache
         for (var i = 0; i < this.evCache.length; i++) {
