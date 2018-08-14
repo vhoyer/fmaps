@@ -15,7 +15,8 @@ class My2dContext {
 
     get zoom() { return this._zoom; }
     set zoom(value) {
-        if (value < 0.05){
+        if (value < 0.24){
+            //aiming at 0.25, but javascript is a bitch
             return;
         }
         this._zoom = value;
@@ -71,8 +72,8 @@ class My2dContext {
         );
     }
 
-    zoomIn(){ this.zoom += 0.05; } 
-    zoomOut(){ this.zoom -= 0.05; }
+    zoomIn(){ this.zoom *= 1.05; } 
+    zoomOut(){ this.zoom *= 0.95; }
     zooming(isOut) {
         if (isOut) {
             this.zoomOut();
